@@ -12,7 +12,7 @@ angular.module('nag.tooltip', [
     return {
       restrict: 'A',
       scope: {
-        options: '=nagTooltip'
+        options: '=?nagTooltip'
       },
       compile: function() {
         return {
