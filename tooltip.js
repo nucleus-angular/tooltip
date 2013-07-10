@@ -1,26 +1,21 @@
 /**
  * todo: support ajax loading data
  * todo: support being able to hover over tooltip and keep it open without make it completely sticky
+ * todo: support automatically repositioning tooltip content if any part fall out of the window viewport (difficult with element that has a positioned element)
  */
-angular.module('nag.tooltip', [
-  'nag.core'
-])
+angular.module('nag.tooltip', [])
 .directive('nagTooltip', [
   '$compile',
-  'nagDefaults',
-  function($compile, nagDefaults){
+  function($compile){
     return {
       restrict: 'A',
-      scope: {
-        options: '=?nagTooltip'
-      },
+      scope: {},
       compile: function() {
         return {
           pre: function(scope, element, attributes) {
-            scope.options = nagDefaults.getTooltipOptions(scope.options);
-            var template = $('<div>' + $(element).html() + '</div>');
+            var template = $('<span>' + $(element).html() + '</span>');
 
-            if(scope.options.sticky !== true) {
+            if(attributes.sticky !== 'true') {
               template.find('.handle').attr('ng-mouseenter', 'showTooltip()');
               template.find('.handle').attr('ng-mouseleave', 'hideTooltip()');
             } else {
@@ -33,51 +28,37 @@ angular.module('nag.tooltip', [
 
           },
           post: function(scope, element, attributes) {
-            var $handle, $content, getTop, getLeft, defaults, setTooltipPosition;
+            var $handle, $content, getTop, getLeft, setTooltipPosition;
+            var verticalPosition = attributes.vertical || 'bottom';
+            var horizontalPosition = attributes.horizontal || 'right';
 
             $handle = $(element).find('.handle');
             $content = $(element).find('.content');
 
             getTop = function() {
-              var top, offset, returnValue;
-              offset = $handle.offset();
+              var top, offset;
+              offset = $handle.position();
+              console.log()
               top = {};
 
-              top.middle = offset.top - (($content.outerHeight(true) - $handle.outerHeight(true)) / 2);
+              top.middle = offset.top + (($handle.outerHeight(true) / 2) - ($content.outerHeight(true) / 2));
               top.bottom = offset.top + $handle.outerHeight(true);
               top.top = offset.top - $content.outerHeight(true);
 
-              returnValue = top[scope.options.verticalPosition];
-
-              if(returnValue < 0) {
-                returnValue = top.bottom;
-              } else if((returnValue + $content.outerHeight(true)) > $(window).height()) {
-                returnValue = top.top;
-              }
-
-              return returnValue;
-            }
+              return top[verticalPosition];
+            };
 
             getLeft = function() {
-              var left, offset, returnValue;
-              offset = $handle.offset();
+              var left, offset;
+              offset = $handle.position();
               left = {};
 
-              left.middle = offset.left - ($content.outerWidth(true) / 2);
+              left.middle = offset.left + (($handle.outerWidth(true) / 2) - $content.outerWidth(true) / 2);
               left.left = offset.left - $content.outerWidth(true);
               left.right = offset.left + $handle.outerWidth(true);
 
-              returnValue = left[scope.options.horizontalPosition];
-
-              if(returnValue < 0) {
-                returnValue = left.right;
-              } else if((returnValue + $content.outerWidth(true)) > $(window).width()) {
-                returnValue = left.left;
-              }
-
-
-              return returnValue;
-            }
+              return left[horizontalPosition];
+            };
 
             setTooltipPosition = function() {
               $content.css('display', 'none');
