@@ -1,7 +1,16 @@
 /**
- * todo: support ajax loading data
- * todo: support being able to hover over tooltip and keep it open without make it completely sticky
- * todo: support automatically repositioning tooltip content if any part fall out of the window viewport (difficult with element that has a positioned element)
+ * Tooltip component
+ * @todo: support ajax loading data
+ * @todo: support being able to hover over tooltip and keep it open without make it completely sticky
+ * @todo: support automatically repositioning tooltip content if any part fall out of the window viewport (difficult with element that has a positioned element)
+ *
+ * @module nag.tooltip
+ * @ngdirective nagToolTip
+ *
+ * @nghtmlattribute {empty} nag-tooltip Tell AngularJS this element is a tooltip component
+ * @nghtmlattribute {boolean} [data-sticky=false] Whether or not the tooltip is sticky
+ * @nghtmlattribute {string} [vertical="bottom"] Vertical positioning (top, middle or bottom)
+ * @nghtmlattribute {string} [horizontal="right"] Horizontal positioning (left, middle, or right)
  */
 angular.module('nag.tooltip', [])
 .directive('nagTooltip', [
@@ -74,18 +83,42 @@ angular.module('nag.tooltip', [])
               $content.css('display', 'inherit');
             };
 
+            /**
+             * Whether or no the content is visible
+             *
+             * @ngscope
+             * @property {boolean} contentVisible
+             */
             scope.contentVisible = false;
 
+            /**
+             * Display the tooltip content
+             *
+             * @ngscope
+             * @method showTooltip
+             */
             scope.showTooltip = function() {
               //makes sure if the layout of the page has changes, the tooltip will still show up in the correct position
               setTooltipPosition();
               scope.contentVisible = true;
             };
 
+            /**
+             * Hide the tooltip content
+             *
+             * @ngscope
+             * @method hideTooltip
+             */
             scope.hideTooltip = function() {
               scope.contentVisible = false;
             };
 
+            /**
+             * Toggle the display of the tooltip content
+             *
+             * @ngscope
+             * @method toggleTooltip
+             */
             scope.toggleTooltip = function() {
               if(scope.contentVisible === true) {
                 scope.hideTooltip();
