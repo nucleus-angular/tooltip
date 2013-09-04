@@ -47,7 +47,6 @@ angular.module('nag.tooltip', [])
             getTop = function() {
               var top, offset;
               offset = $handle.position();
-              console.log()
               top = {};
 
               top.middle = offset.top + (($handle.outerHeight(true) / 2) - ($content.outerHeight(true) / 2));
