@@ -9,8 +9,17 @@
  *
  * @nghtmlattribute {empty} nag-tooltip Tell AngularJS this element is a tooltip component
  * @nghtmlattribute {boolean} [data-sticky=false] Whether or not the tooltip is sticky
- * @nghtmlattribute {string} [vertical="bottom"] Vertical positioning (top, middle or bottom)
- * @nghtmlattribute {string} [horizontal="right"] Horizontal positioning (left, middle, or right)
+ * @nghtmlattribute {string} [vertical="bottom"] Vertical positioning
+ *
+ * - top
+ * - middle
+ * - bottom
+ *
+ * @nghtmlattribute {string} [horizontal="right"] Horizontal positioning
+ *
+ * - left
+ * - middle
+ * - right
  */
 angular.module('nag.tooltip', [])
 .directive('nagTooltip', [
