@@ -1,5 +1,10 @@
 /**
- * Tooltip component
+ * # Tooltip
+ *
+ * This directive allow you to create a tooltip when you hover of interact with the element.
+ *
+ * EXAMPLE TODO
+ *
  * @todo: support ajax loading data
  * @todo: support being able to hover over tooltip and keep it open without make it completely sticky
  * @todo: support automatically repositioning tooltip content if any part fall out of the window viewport (difficult with element that has a positioned element)
