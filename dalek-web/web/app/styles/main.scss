@@ -1,0 +1,90 @@
+@import "../../components/bourbon/app/assets/stylesheets/_bourbon";
+@import "../../components/nucleus-angular-sass-framework/assets/styles/framework/_variables";
+@import "../../components/nucleus-angular-sass-framework/assets/styles/framework";
+
+
+.auto {
+  position: fixed;
+
+  &.bottom {
+    bottom: 0;
+  }
+
+  &.left {
+    left: 0
+  }
+
+  &.top {
+    top: 0;
+  }
+
+  &.right {
+    right: 0;
+  }
+}
+
+.manual-container {
+  position: relative;
+  top: 160px;
+  left: 200px;
+  height: 700px;
+  width: 700px;
+  border: 1px solid black;
+}
+
+.manual {
+  position: absolute;
+
+  &.top-left {
+    top: 0px;
+    left: 0px;
+  }
+
+  &.top-middle {
+    top: 0px;
+    left: 255px;
+  }
+
+  &.top-right {
+    top: 0px;
+    right: 0px;
+    
+  }
+
+  &.middle-left {
+    top: 344px;
+    left: 0px;
+  }
+
+  &.middle-right {
+    top: 344px;
+    right: 0px;
+  }
+
+  &.bottom-left {
+    bottom: 0px;
+    left: 0px;
+    
+  }
+
+  &.bottom-middle {
+    bottom: 0px;
+    left: 255px;
+  }
+
+  &.bottom-right {
+    bottom: 0px;
+    right: 0px;
+    
+  }
+}
+
+.tooltip .content {
+  width: 100px;
+}
+
+.sticky {
+  position: relative;
+  top: 90px;
+  left: 200px;
+}
