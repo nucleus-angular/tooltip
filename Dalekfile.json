@@ -1,0 +1,8 @@
+{
+  "tests": [
+    "dalek/tooltip.js"
+  ],
+  "browser": [
+    "chrome"
+  ]
+}
