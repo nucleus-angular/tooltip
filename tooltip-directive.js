@@ -31,7 +31,7 @@ function capitalize(string) {
  * - middle
  * - right
  */
-angular.module('nag.tooltip', [])
+angular.module('nag.tooltip')
 .directive('nagTooltip', [
   '$compile',
   function($compile){
