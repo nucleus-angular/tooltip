@@ -2,6 +2,7 @@
   "tests": [
     "dalek/tooltip.js"
   ],
+  "logLevel": "1",
   "browser": [
     "chrome"
   ]
