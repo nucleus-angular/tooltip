@@ -4,7 +4,7 @@ Each change log are assumed to be accompanied by associated unit test and docume
 
 ## master
 
-- N/A
+- added model attribute that can be attached to tooltip
 
 ## 0.5.0
 

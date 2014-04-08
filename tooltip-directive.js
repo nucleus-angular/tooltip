@@ -1,4 +1,4 @@
-//todo: move to utilities
+//TODO: move to utilities
 function capitalize(string) {
   return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase()
 }
@@ -9,10 +9,6 @@ function capitalize(string) {
  * This directive allow you to create a tooltip when you hover of interact with the element.
  *
  * EXAMPLE TODO
- *
- * @todo: support ajax loading data
- * @todo: support being able to hover over tooltip and keep it open without make it completely sticky
- * @todo: support automatically repositioning tooltip content if any part fall out of the window viewport (difficult with element that has a positioned element)
  *
  * @module nag.tooltip
  * @ngdirective nagToolTip
@@ -37,7 +33,9 @@ angular.module('nag.tooltip')
   function($compile){
     return {
       restrict: 'A',
-      scope: {},
+      scope: {
+        model: '='
+      },
       compile: function() {
         return {
           pre: function(scope, element, attributes) {
@@ -64,7 +62,7 @@ angular.module('nag.tooltip')
             var $handle, $content, getTop, getLeft, setTooltipPosition, getAutoPosition;
             var verticalPosition = attributes.vertical || 'bottom';
             var horizontalPosition = attributes.horizontal || 'right';
-            var autoPosition = attributes.autoPosition === 'true' ? true : false;
+            var autoPosition = attributes.autoPosition === 'true';
 
             $handle = element.find('.handle');
             $content = element.find('.content');
@@ -97,19 +95,6 @@ angular.module('nag.tooltip')
               var positionToGet = type === 'horizontal' ? 'left' : 'top';
               var contentSizeModifer = getContentSizeModifier();
               var assumeContentSize = ($content['outer' + capitalize(dimensionToGet)](true) * contentSizeModifer);
-              var switchToPosition = type === 'horizontal' ? 'left' : 'top';
-
-              console.log('---off screen---');
-              console.log('type: ' + type);
-              console.log('position: ' + position);
-              console.log('dimenison to get: ' + dimensionToGet);
-              console.log('values: ' + JSON.stringify(values));
-              console.log('value to test: ' + values[position])
-              console.log('element offset position: ' + positionToGet);
-              console.log('element offset value: ' + element.offset()[positionToGet]);
-              console.log('content size modifier: ' + contentSizeModifer);
-              console.log('content outer' + capitalize(dimensionToGet) + '(true) with modifier: ' + assumeContentSize);
-              console.log('window ' + dimensionToGet + '(): ' + $(window)[dimensionToGet]());
 
               if(values[position] + element.offset()[positionToGet] + assumeContentSize > $(window)[dimensionToGet]()) {
                 autoPosition = type === 'horizontal' ? 'left' : 'top';
