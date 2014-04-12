@@ -1,7 +1,5 @@
 # Change Log
 
-Each change log are assumed to be accompanied by associated unit test and documentation updates.
-
 ## master
 
 - added model attribute that can be attached to tooltip

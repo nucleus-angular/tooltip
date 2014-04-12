@@ -54,7 +54,7 @@ angular.module('nag.tooltip')
               top: '0px',
               left: '0px'
             });
-            $(element).html($compile(template)(scope));
+            $(element).html($compile(template.html())(scope));
             $(element).addClass('tooltip');
 
           },
