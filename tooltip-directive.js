@@ -39,26 +39,32 @@ angular.module('nag.tooltip')
       compile: function() {
         return {
           pre: function(scope, element, attributes) {
-            var template = $('<span>' + $(element).html() + '</span>');
+
+          },
+          post: function(scope, element, attributes) {
+            //we need to make changes to the element with the directive
+            element.removeAttr('nag-tooltip');
 
             if(attributes.sticky !== 'true') {
-              template.find('.handle').attr('ng-mouseenter', 'showTooltip()');
-              template.find('.handle').attr('ng-mouseleave', 'hideTooltip()');
+              element.find('.handle').attr('ng-mouseenter', 'showTooltip()');
+              element.find('.handle').attr('ng-mouseleave', 'hideTooltip()');
             } else {
-              template.find('.handle').attr('ng-click', 'toggleTooltip()');
+              element.find('.handle').attr('ng-click', 'toggleTooltip()');
             }
 
-            template.find('.content').css({
-              visibility: 'hidden',
+            element.find('.content').css({
               position: 'absolute',
               top: '0px',
               left: '0px'
             });
-            $(element).html($compile(template.html())(scope));
-            $(element).addClass('tooltip');
+            element.attr('ng-class', "{'is-active': contentVisible}");
+            element.addClass('tooltip');
+            var newElement = $($compile(element[0].outerHTML)(scope));
+            element.replaceWith(newElement);
+            element = newElement;
 
-          },
-          post: function(scope, element, attributes) {
+
+
             var $handle, $content, getTop, getLeft, setTooltipPosition, getAutoPosition;
             var verticalPosition = attributes.vertical || 'bottom';
             var horizontalPosition = attributes.horizontal || 'right';
@@ -70,7 +76,6 @@ angular.module('nag.tooltip')
             getAutoPosition = function(type, position, values, element) {
               var getContentSizeModifier = function() {
                 var modifier;
-                console.log('fn position: ' + position);
 
                 switch(position) {
                   case 'middle':
@@ -140,8 +145,6 @@ angular.module('nag.tooltip')
             };
 
             setTooltipPosition = function() {
-              $content.css('visibility', 'hidden');
-
               var css =
               {
                 top: getTop(),
@@ -149,7 +152,6 @@ angular.module('nag.tooltip')
               };
 
               $(element).find('.content').css(css);
-              $content.css('visibility', 'inherit');
             };
 
             /**
@@ -179,7 +181,6 @@ angular.module('nag.tooltip')
              * @method hideTooltip
              */
             scope.hideTooltip = function() {
-              $content.css('visibility', 'hidden');
               scope.contentVisible = false;
             };
 

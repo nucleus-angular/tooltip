@@ -1,5 +1,5 @@
-@import "../../components/bourbon/app/assets/stylesheets/_bourbon";
 @import "../../components/nucleus-angular-sass-framework/assets/styles/framework/_variables";
+@import "../../components/bourbon/dist/_bourbon";
 @import "../../components/nucleus-angular-sass-framework/assets/styles/framework";
 
 
@@ -48,7 +48,7 @@
   &.top-right {
     top: 0px;
     right: 0px;
-    
+
   }
 
   &.middle-left {
@@ -64,7 +64,7 @@
   &.bottom-left {
     bottom: 0px;
     left: 0px;
-    
+
   }
 
   &.bottom-middle {
@@ -75,7 +75,7 @@
   &.bottom-right {
     bottom: 0px;
     right: 0px;
-    
+
   }
 }
 
