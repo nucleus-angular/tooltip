@@ -39,32 +39,24 @@ angular.module('nag.tooltip')
       compile: function() {
         return {
           pre: function(scope, element, attributes) {
-
-          },
-          post: function(scope, element, attributes) {
-            //we need to make changes to the element with the directive
-            element.removeAttr('nag-tooltip');
+            var template = $('<span>' + $(element).html() + '</span>');
 
             if(attributes.sticky !== 'true') {
-              element.find('.handle').attr('ng-mouseenter', 'showTooltip()');
-              element.find('.handle').attr('ng-mouseleave', 'hideTooltip()');
+              template.find('.handle').attr('ng-mouseenter', 'showTooltip()');
+              template.find('.handle').attr('ng-mouseleave', 'hideTooltip()');
             } else {
-              element.find('.handle').attr('ng-click', 'toggleTooltip()');
+              template.find('.handle').attr('ng-click', 'toggleTooltip()');
             }
 
-            element.find('.content').css({
+            template.find('.content').css({
               position: 'absolute',
               top: '0px',
               left: '0px'
             });
-            element.attr('ng-class', "{'is-active': contentVisible}");
-            element.addClass('tooltip');
-            var newElement = $($compile(element[0].outerHTML)(scope));
-            element.replaceWith(newElement);
-            element = newElement;
-
-
-
+            $(element).html($compile(template.html())(scope));
+            $(element).addClass('tooltip');
+          },
+          post: function(scope, element, attributes) {
             var $handle, $content, getTop, getLeft, setTooltipPosition, getAutoPosition;
             var verticalPosition = attributes.vertical || 'bottom';
             var horizontalPosition = attributes.horizontal || 'right';
@@ -196,7 +188,16 @@ angular.module('nag.tooltip')
               } else {
                 scope.showTooltip();
               }
-            }
+            };
+
+            scope.$watch('contentVisible', function(newValue, oldValue) {
+              console.log(newValue);
+              if(newValue === true) {
+                element.addClass('is-active');
+              } else {
+                element.removeClass('is-active');
+              }
+            });
           }
         };
       }
