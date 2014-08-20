@@ -33,172 +33,163 @@ angular.module('nag.tooltip')
   function($compile){
     return {
       restrict: 'A',
-      scope: {
-        model: '='
-      },
-      compile: function() {
-        return {
-          pre: function(scope, element, attributes) {
-            var template = $('<span>' + $(element).html() + '</span>');
+      scope: true,
+      compile: function(element, attributes) {
+        if(attributes.sticky !== 'true') {
+          element.find('.handle').attr('ng-mouseenter', 'showTooltip()');
+          element.find('.handle').attr('ng-mouseleave', 'hideTooltip()');
+        } else {
+          element.find('.handle').attr('ng-click', 'toggleTooltip()');
+        }
 
-            if(attributes.sticky !== 'true') {
-              template.find('.handle').attr('ng-mouseenter', 'showTooltip()');
-              template.find('.handle').attr('ng-mouseleave', 'hideTooltip()');
-            } else {
-              template.find('.handle').attr('ng-click', 'toggleTooltip()');
+        element.find('.content').css({
+          position: 'absolute',
+          top: '0px',
+          left: '0px'
+        });
+        element.addClass('tooltip');
+
+        return function(scope, element, attributes) {
+          var $handle, $content, getTop, getLeft, setTooltipPosition, getAutoPosition;
+          var verticalPosition = attributes.vertical || 'bottom';
+          var horizontalPosition = attributes.horizontal || 'right';
+          var autoPosition = attributes.autoPosition === 'true';
+
+          $handle = element.find('.handle');
+          $content = element.find('.content');
+
+          getAutoPosition = function(type, position, values, element) {
+            var getContentSizeModifier = function() {
+              var modifier;
+
+              switch(position) {
+                case 'middle':
+                  modifier = .5;
+                  break;
+
+                case 'right':
+                case 'bottom':
+                  modifier = 1;
+                  break;
+
+                default:
+                  modifier = 0;
+                  break;
+              }
+
+              return modifier;
+            };
+
+            var autoPosition = position;
+            var dimensionToGet = type === 'horizontal' ? 'width' : 'height';
+            var positionToGet = type === 'horizontal' ? 'left' : 'top';
+            var contentSizeModifer = getContentSizeModifier();
+            var assumeContentSize = ($content['outer' + capitalize(dimensionToGet)](true) * contentSizeModifer);
+
+            if(values[position] + element.offset()[positionToGet] + assumeContentSize > $(window)[dimensionToGet]()) {
+              autoPosition = type === 'horizontal' ? 'left' : 'top';
+            } else if(values[position] + element.offset()[positionToGet] + assumeContentSize < 0) {
+              autoPosition = type === 'horizontal' ? 'right' : 'bottom';
             }
 
-            template.find('.content').css({
-              position: 'absolute',
-              top: '0px',
-              left: '0px'
-            });
-            $(element).html($compile(template.html())(scope));
-            $(element).addClass('tooltip');
-          },
-          post: function(scope, element, attributes) {
-            var $handle, $content, getTop, getLeft, setTooltipPosition, getAutoPosition;
-            var verticalPosition = attributes.vertical || 'bottom';
-            var horizontalPosition = attributes.horizontal || 'right';
-            var autoPosition = attributes.autoPosition === 'true';
+            return autoPosition;
+          };
 
-            $handle = element.find('.handle');
-            $content = element.find('.content');
+          getTop = function() {
+            var truePosition = verticalPosition;
+            var top, offset;
+            offset = $handle.position();
+            top = {};
 
-            getAutoPosition = function(type, position, values, element) {
-              var getContentSizeModifier = function() {
-                var modifier;
+            top.middle = offset.top + Math.floor(($handle.outerHeight(true) / 2) - ($content.outerHeight(true) / 2));
+            top.bottom = offset.top + $handle.outerHeight(true);
+            top.top = offset.top - $content.outerHeight(true);
 
-                switch(position) {
-                  case 'middle':
-                    modifier = .5;
-                    break;
+            if(autoPosition === true) {
+              truePosition = getAutoPosition('vertical', truePosition, top, element);
+            }
 
-                  case 'right':
-                  case 'bottom':
-                    modifier = 1;
-                    break;
+            return top[truePosition];
+          };
 
-                  default:
-                    modifier = 0;
-                    break;
-                }
+          getLeft = function() {
+            var truePosition = horizontalPosition;
+            var left, offset;
+            offset = $handle.position();
+            left = {};
 
-                return modifier;
-              };
+            left.middle = offset.left + Math.floor(($handle.outerWidth(true) / 2) - $content.outerWidth(true) / 2);
+            left.left = offset.left - $content.outerWidth(true);
+            left.right = offset.left + $handle.outerWidth(true);
 
-              var autoPosition = position;
-              var dimensionToGet = type === 'horizontal' ? 'width' : 'height';
-              var positionToGet = type === 'horizontal' ? 'left' : 'top';
-              var contentSizeModifer = getContentSizeModifier();
-              var assumeContentSize = ($content['outer' + capitalize(dimensionToGet)](true) * contentSizeModifer);
+            if(autoPosition === true) {
+              truePosition = getAutoPosition('horizontal', truePosition, left, element);
+            }
 
-              if(values[position] + element.offset()[positionToGet] + assumeContentSize > $(window)[dimensionToGet]()) {
-                autoPosition = type === 'horizontal' ? 'left' : 'top';
-              } else if(values[position] + element.offset()[positionToGet] + assumeContentSize < 0) {
-                autoPosition = type === 'horizontal' ? 'right' : 'bottom';
-              }
+            return left[truePosition];
+          };
 
-              return autoPosition;
+          setTooltipPosition = function() {
+            var css =
+            {
+              top: getTop(),
+              left: getLeft()
             };
 
-            getTop = function() {
-              var truePosition = verticalPosition;
-              var top, offset;
-              offset = $handle.position();
-              top = {};
+            $(element).find('.content').css(css);
+          };
 
-              top.middle = offset.top + Math.floor(($handle.outerHeight(true) / 2) - ($content.outerHeight(true) / 2));
-              top.bottom = offset.top + $handle.outerHeight(true);
-              top.top = offset.top - $content.outerHeight(true);
+          /**
+           * Whether or no the content is visible
+           *
+           * @ngscope
+           * @property {boolean} contentVisible
+           */
+          scope.contentVisible = false;
 
-              if(autoPosition === true) {
-                truePosition = getAutoPosition('vertical', truePosition, top, element);
-              }
+          /**
+           * Display the tooltip content
+           *
+           * @ngscope
+           * @method showTooltip
+           */
+          scope.showTooltip = function() {
+            //makes sure if the layout of the page has changes, the tooltip will still show up in the correct position
+            setTooltipPosition();
+            scope.contentVisible = true;
+          };
 
-              return top[truePosition];
-            };
-
-            getLeft = function() {
-              var truePosition = horizontalPosition;
-              var left, offset;
-              offset = $handle.position();
-              left = {};
-
-              left.middle = offset.left + Math.floor(($handle.outerWidth(true) / 2) - $content.outerWidth(true) / 2);
-              left.left = offset.left - $content.outerWidth(true);
-              left.right = offset.left + $handle.outerWidth(true);
-
-              if(autoPosition === true) {
-                truePosition = getAutoPosition('horizontal', truePosition, left, element);
-              }
-
-              return left[truePosition];
-            };
-
-            setTooltipPosition = function() {
-              var css =
-              {
-                top: getTop(),
-                left: getLeft()
-              };
-
-              $(element).find('.content').css(css);
-            };
-
-            /**
-             * Whether or no the content is visible
-             *
-             * @ngscope
-             * @property {boolean} contentVisible
-             */
+          /**
+           * Hide the tooltip content
+           *
+           * @ngscope
+           * @method hideTooltip
+           */
+          scope.hideTooltip = function() {
             scope.contentVisible = false;
+          };
 
-            /**
-             * Display the tooltip content
-             *
-             * @ngscope
-             * @method showTooltip
-             */
-            scope.showTooltip = function() {
-              //makes sure if the layout of the page has changes, the tooltip will still show up in the correct position
-              setTooltipPosition();
-              scope.contentVisible = true;
-            };
+          /**
+           * Toggle the display of the tooltip content
+           *
+           * @ngscope
+           * @method toggleTooltip
+           */
+          scope.toggleTooltip = function() {
+            if(scope.contentVisible === true) {
+              scope.hideTooltip();
+            } else {
+              scope.showTooltip();
+            }
+          };
 
-            /**
-             * Hide the tooltip content
-             *
-             * @ngscope
-             * @method hideTooltip
-             */
-            scope.hideTooltip = function() {
-              scope.contentVisible = false;
-            };
-
-            /**
-             * Toggle the display of the tooltip content
-             *
-             * @ngscope
-             * @method toggleTooltip
-             */
-            scope.toggleTooltip = function() {
-              if(scope.contentVisible === true) {
-                scope.hideTooltip();
-              } else {
-                scope.showTooltip();
-              }
-            };
-
-            scope.$watch('contentVisible', function(newValue, oldValue) {
-              console.log(newValue);
-              if(newValue === true) {
-                element.addClass('is-active');
-              } else {
-                element.removeClass('is-active');
-              }
-            });
-          }
+          scope.$watch('contentVisible', function(newValue, oldValue) {
+            if(newValue === true) {
+              element.addClass('is-active');
+            } else {
+              element.removeClass('is-active');
+            }
+          });
         };
       }
     };

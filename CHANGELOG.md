@@ -2,7 +2,7 @@
 
 ## master
 
-- added model attribute that can be attached to tooltip
+- switch from isolate scope to child scope since it generally will use data from the parent scope to populate
 
 ## 0.5.0
 
