@@ -27,7 +27,7 @@
   position: relative;
   top: 160px;
   left: 200px;
-  height: 700px;
+  height: 300px;
   width: 700px;
   border: 1px solid black;
 }
@@ -52,12 +52,12 @@
   }
 
   &.middle-left {
-    top: 344px;
+    top: 144px;
     left: 0px;
   }
 
   &.middle-right {
-    top: 344px;
+    top: 144px;
     right: 0px;
   }
 
