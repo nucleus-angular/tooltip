@@ -2,8 +2,22 @@
 @import "../../components/nucleus-angular-sass-framework/assets/styles/framework/_variables";
 @import "../../components/nucleus-angular-sass-framework/assets/styles/framework";
 
+.home-page {
+  p {
+    width: 700px;
+    margin: 200px 0 0 200px;;
+  }
 
-.auto {
+  .left .content {
+    min-width: 55px;
+  }
+
+  .handle {
+    color: blue;
+  }
+}
+
+/*.auto {
   position: fixed;
 
   &.bottom {
@@ -87,4 +101,4 @@
   position: relative;
   top: 90px;
   left: 200px;
-}
+}*/

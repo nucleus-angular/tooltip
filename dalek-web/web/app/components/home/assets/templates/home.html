@@ -1,58 +1,22 @@
-<div class="home-page">
-  <div nag-tooltip class="auto bottom right" auto-position="true" data-vertical="bottom" data-horizontal="right" data-ut="auto-bottom-right">
-    <div class="handle">auto tooltip in bottom right</div>
-    <div class="content">tool tip content</div>
-  </div>
-  <div nag-tooltip class="auto bottom left" auto-position="true" data-vertical="bottom" data-horizontal="left" data-ut="auto-bottom-left">
-    <div class="handle">auto tooltip in bottom left</div>
-    <div class="content">tool tip content</div>
-  </div>
-  <div nag-tooltip class="auto top right" auto-position="true" data-vertical="top" data-horizontal="right" data-ut="auto-top-right">
-    <div class="handle">auto tooltip in top right</div>
-    <div class="content">tool tip content</div>
-  </div>
-  <div nag-tooltip class="auto top left" auto-position="true" data-vertical="top" data-horizontal="left" data-ut="auto-top-left">
-    <div class="handle">auto tooltip in top left</div>
-    <div class="content">tool tip content</div>
-  </div>
+<div class="home-page" style="position: relative;">
+  <p>
+    This paragraph content a number of tooltip element to show the functionality of this component.  The placement of the tooltip can be down easily with the <span nag-tooltip data-position="top" data-content-id="top-content"><span class="handle">top</span></span>, <span nag-tooltip data-position="right" data-content-id="right-content"><span class="handle">right</span></span>, <span nag-tooltip data-position="left" data-content-id="left-content"><span class="handle">left</span></span>, and <span nag-tooltip data-position="bottom" data-content-id="bottom-content"><span class="handle">bottom</span></span> classes.  You can also use the data-vertical and data-horizontal attribute to further define tooltip positon, such as <span nag-tooltip data-position="top" data-horizontal="left" data-content-id="top-left-content"><span class="handle">top left</span></span>, <span nag-tooltip data-position="top" data-horizontal="right" data-content-id="top-right-content"><span class="handle">top right</span></span>, <span nag-tooltip data-position="bottom" data-horizontal="left" data-content-id="bottom-left-content"><span class="handle">bottom left</span></span>, or <span nag-tooltip data-position="bottom" data-horizontal="right" data-content-id="bottom-right-content"><span class="handle">bottom right</span></span>.  Tooltip can not only have a regular hover tooltip buyer also a <span nag-tooltip data-position="bottom" data-content-id="regular-content" data-sticky-content-id="sticky-content"><span class="handle">sticky version</span></span>.
+  </p>
+  <div id="top-content" class="tooltip-content bottom-arrow">top tooltip content</div>
+  <div id="right-content" class="tooltip-content left-arrow">right tooltip content</div>
+  <div id="left-content" class="tooltip-content right-arrow">left tooltip content</div>
+  <div id="bottom-content" class="tooltip-content top-arrow">bottom tooltip content</div>
+  <div id="top-left-content" class="tooltip-content">top left tooltip content</div>
+  <div id="top-right-content" class="tooltip-content">top right tooltip content</div>
+  <div id="bottom-left-content" class="tooltip-content">bottom left tooltip content</div>
+  <div id="bottom-right-content" class="tooltip-content">bottom right tooltip content</div>
 
-  <div nag-tooltip class="sticky" data-sticky="true" data-ut="sticky">
-    <div class="handle">sticky tooltip</div>
-    <div class="content">tool tip content</div>
-  </div>
-
-  <div class="manual-container">
-    <div nag-tooltip class="manual top-left" data-vertical="top" data-horizontal="left" data-ut="manual-top-left">
-      <div class="handle">manual tooltip in top left</div>
-      <div class="content">tool tip content</div>
-    </div>
-    <div nag-tooltip class="manual top-middle" data-vertical="top" data-horizontal="middle" data-ut="manual-top-middle">
-      <div class="handle">manual tooltip in top middle</div>
-      <div class="content">tool tip content</div>
-    </div>
-    <div nag-tooltip class="manual top-right" data-vertical="top" data-horizontal="right" data-ut="manual-top-right">
-      <div class="handle">manual tooltip in top right</div>
-      <div class="content">tool tip content</div>
-    </div>
-    <div nag-tooltip class="manual middle-left" data-vertical="middle" data-horizontal="left" data-ut="manual-middle-left">
-      <div class="handle">manual tooltip in middle left</div>
-      <div class="content">tool tip content</div>
-    </div>
-    <div nag-tooltip class="manual middle-right" data-vertical="middle" data-horizontal="right" data-ut="manual-middle-right">
-      <div class="handle">manual tooltip in middle right</div>
-      <div class="content">tool tip content</div>
-    </div>
-    <div nag-tooltip class="manual bottom-left" data-vertical="bottom" data-horizontal="left" data-ut="manual-bottom-left">
-      <div class="handle">manual tooltip in bottom left</div>
-      <div class="content">tool tip content</div>
-    </div>
-    <div nag-tooltip class="manual bottom-middle" data-vertical="bottom" data-horizontal="middle" data-ut="manual-bottom-middle">
-      <div class="handle">manual tooltip in bottom middle</div>
-      <div class="content">tool tip content</div>
-    </div>
-    <div nag-tooltip class="manual bottom-right" data-vertical="bottom" data-horizontal="right" data-ut="manual-bottom-right">
-      <div class="handle">manual tooltip in bottom right</div>
-      <div class="content">tool tip content</div>
-    </div>
+  <div id="regular-content" class="tooltip-content top-arrow">Switch Applications</div>
+  <div id="sticky-content" class="tooltip-sticky-content top-arrow">
+    <ul>
+      <li>Email</li>
+      <li>Documents</li>
+      <li>Spread Sheets</li>
+    </ul>
   </div>
 </div>

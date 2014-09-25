@@ -1,8 +1,3 @@
-//TODO: move to utilities
-function capitalize(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase()
-}
-
 /**
  * # Tooltip
  *
@@ -14,14 +9,22 @@ function capitalize(string) {
  * @ngdirective nagToolTip
  *
  * @nghtmlattribute {empty} nag-tooltip Tell AngularJS this element is a tooltip component
- * @nghtmlattribute {boolean} [data-sticky=false] Whether or not the tooltip is sticky
+ * @nghtmlattribute {string} data-position Tell the position of the tooltip relative to the handle, can be:
+ *
+ * - top
+ * - left
+ * - right
+ * - bottom
+ *
+ * By default , the tooltip will default to the middle of the position you select (top middle, left middle, etc..) hoever you can use the `data-vertical` and `data-horizontal` attributes to even further modify the tooltip location.
+ *
  * @nghtmlattribute {string} [data-vertical="bottom"] Vertical positioning
  *
  * - top
  * - middle
  * - bottom
  *
- * @nghtmlattribute {string} [horizontal="right"] Horizontal positioning
+ * @nghtmlattribute {string} [data-horizontal="right"] Horizontal positioning
  *
  * - left
  * - middle
@@ -35,14 +38,22 @@ angular.module('nag.tooltip')
       restrict: 'A',
       scope: true,
       compile: function(element, attributes) {
-        if(attributes.sticky !== 'true') {
-          element.find('.handle').attr('ng-mouseenter', 'showTooltip()');
-          element.find('.handle').attr('ng-mouseleave', 'hideTooltip()');
-        } else {
-          element.find('.handle').attr('ng-click', 'toggleTooltip()');
+        var setContentCss = function(cssObject) {
+          $('#' + attributes.contentId).css(cssObject);
+
+          if(attributes.stickyContentId) {
+            $('#' + attributes.stickyContentId).css(cssObject);
+          }
+        };
+
+        element.find('.handle').attr('ng-mouseenter', 'showTooltip()');
+        element.find('.handle').attr('ng-mouseleave', 'hideTooltip()');
+
+        if(attributes.stickyContentId) {
+          element.find('.handle').attr('ng-click', 'toggleTooltip(true)');
         }
 
-        element.find('.content').css({
+        setContentCss({
           position: 'absolute',
           top: '0px',
           left: '0px'
@@ -51,52 +62,14 @@ angular.module('nag.tooltip')
 
         return function(scope, element, attributes) {
           var $handle, $content, getTop, getLeft, setTooltipPosition, getAutoPosition;
-          var verticalPosition = attributes.vertical || 'bottom';
-          var horizontalPosition = attributes.horizontal || 'right';
-          var autoPosition = attributes.autoPosition === 'true';
+          var verticalPosition = attributes.vertical || 'middle';
+          var horizontalPosition = attributes.horizontal || 'middle';
+          var position = attributes.position;
 
           $handle = element.find('.handle');
-          $content = element.find('.content');
 
-          getAutoPosition = function(type, position, values, element) {
-            var getContentSizeModifier = function() {
-              var modifier;
-
-              switch(position) {
-                case 'middle':
-                  modifier = .5;
-                  break;
-
-                case 'right':
-                case 'bottom':
-                  modifier = 1;
-                  break;
-
-                default:
-                  modifier = 0;
-                  break;
-              }
-
-              return modifier;
-            };
-
-            var autoPosition = position;
-            var dimensionToGet = type === 'horizontal' ? 'width' : 'height';
-            var positionToGet = type === 'horizontal' ? 'left' : 'top';
-            var contentSizeModifer = getContentSizeModifier();
-            var assumeContentSize = ($content['outer' + capitalize(dimensionToGet)](true) * contentSizeModifer);
-
-            if(values[position] + element.offset()[positionToGet] + assumeContentSize > $(window)[dimensionToGet]()) {
-              autoPosition = type === 'horizontal' ? 'left' : 'top';
-            } else if(values[position] + element.offset()[positionToGet] + assumeContentSize < 0) {
-              autoPosition = type === 'horizontal' ? 'right' : 'bottom';
-            }
-
-            return autoPosition;
-          };
-
-          getTop = function() {
-            var truePosition = verticalPosition;
+          getTop = function($content) {
+            var truePosition = (position === 'top' || position === 'bottom') ? position: verticalPosition;
             var top, offset;
             offset = $handle.position();
             top = {};
@@ -105,15 +78,11 @@ angular.module('nag.tooltip')
             top.bottom = offset.top + $handle.outerHeight(true);
             top.top = offset.top - $content.outerHeight(true);
 
-            if(autoPosition === true) {
-              truePosition = getAutoPosition('vertical', truePosition, top, element);
-            }
-
             return top[truePosition];
           };
 
-          getLeft = function() {
-            var truePosition = horizontalPosition;
+          getLeft = function($content) {
+            var truePosition = (position === 'left' || position === 'right') ? position: horizontalPosition;
             var left, offset;
             offset = $handle.position();
             left = {};
@@ -122,21 +91,21 @@ angular.module('nag.tooltip')
             left.left = offset.left - $content.outerWidth(true);
             left.right = offset.left + $handle.outerWidth(true);
 
-            if(autoPosition === true) {
-              truePosition = getAutoPosition('horizontal', truePosition, left, element);
-            }
-
             return left[truePosition];
           };
 
           setTooltipPosition = function() {
-            var css =
-            {
-              top: getTop(),
-              left: getLeft()
-            };
+            $('#' + attributes.contentId).css({
+              top: getTop($('#' + attributes.contentId)),
+              left: getLeft($('#' + attributes.contentId))
+            });
 
-            $(element).find('.content').css(css);
+            if(attributes.stickyContentId) {
+              $('#' + attributes.stickyContentId).css({
+                top: getTop($('#' + attributes.stickyContentId)),
+                left: getLeft($('#' + attributes.stickyContentId))
+              });
+            }
           };
 
           /**
@@ -153,10 +122,15 @@ angular.module('nag.tooltip')
            * @ngscope
            * @method showTooltip
            */
-          scope.showTooltip = function() {
+          scope.showTooltip = function(sticky) {
             //makes sure if the layout of the page has changes, the tooltip will still show up in the correct position
             setTooltipPosition();
-            scope.contentVisible = true;
+
+            if(sticky === true) {
+              scope.contentVisible = 'sticky';
+            } else if(scope.contentVisible !== 'sticky') { //make sure not to remove sticky content if it is visible and attempting to should hover tooltip
+              scope.contentVisible = true;
+            }
           };
 
           /**
@@ -165,8 +139,12 @@ angular.module('nag.tooltip')
            * @ngscope
            * @method hideTooltip
            */
-          scope.hideTooltip = function() {
-            scope.contentVisible = false;
+          scope.hideTooltip = function(sticky) {
+            if(sticky === true) {
+              scope.contentVisible = true;
+            } else if(scope.contentVisible !== 'sticky') { //make sure not to remove sticky content is it is visible and attempting to hide regular tooltip
+              scope.contentVisible = false;
+            }
           };
 
           /**
@@ -175,19 +153,28 @@ angular.module('nag.tooltip')
            * @ngscope
            * @method toggleTooltip
            */
-          scope.toggleTooltip = function() {
-            if(scope.contentVisible === true) {
-              scope.hideTooltip();
+          scope.toggleTooltip = function(sticky) {
+            if(
+              (sticky === true && scope.contentVisible === 'sticky')
+              || (sticky !== true && scope.contentVisible === true)) {
+              scope.hideTooltip(sticky);
             } else {
-              scope.showTooltip();
+              scope.showTooltip(sticky);
             }
           };
 
           scope.$watch('contentVisible', function(newValue, oldValue) {
+            if(attributes.stickyContentId) {
+              $('#' + attributes.stickyContentId).removeClass('is-active');
+            }
+
             if(newValue === true) {
-              element.addClass('is-active');
+              $('#' + attributes.contentId).addClass('is-active');
+            } else if(newValue === 'sticky') {
+              $('#' + attributes.stickyContentId).addClass('is-active');
+              $('#' + attributes.contentId).removeClass('is-active');
             } else {
-              element.removeClass('is-active');
+              $('#' + attributes.contentId).removeClass('is-active');
             }
           });
         };
