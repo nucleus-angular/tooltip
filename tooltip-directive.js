@@ -85,13 +85,9 @@ angular.module('nag.tooltip')
             offset = element.position();
             left = {};
 
-            console.log(offset);
-
             left.middle = offset.left + Math.floor((element.outerWidth(true) / 2) - $content.outerWidth(true) / 2);
             left.left = offset.left - $content.outerWidth(true);
             left.right = offset.left + element.outerWidth(true);
-
-            console.log(left);
 
             return left[truePosition];
           };
