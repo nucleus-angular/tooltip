@@ -61,21 +61,19 @@ angular.module('nag.tooltip')
         element.addClass('tooltip');
 
         return function(scope, element, attributes) {
-          var $handle, $content, getTop, getLeft, setTooltipPosition, getAutoPosition;
+          var getTop, getLeft, setTooltipPosition, getAutoPosition;
           var verticalPosition = attributes.vertical || 'middle';
           var horizontalPosition = attributes.horizontal || 'middle';
           var position = attributes.position;
 
-          $handle = element.find('.handle');
-
           getTop = function($content) {
             var truePosition = (position === 'top' || position === 'bottom') ? position: verticalPosition;
             var top, offset;
-            offset = $handle.position();
+            offset = element.position();
             top = {};
 
-            top.middle = offset.top + Math.floor(($handle.outerHeight(true) / 2) - ($content.outerHeight(true) / 2));
-            top.bottom = offset.top + $handle.outerHeight(true);
+            top.middle = offset.top + Math.floor((element.outerHeight(true) / 2) - ($content.outerHeight(true) / 2));
+            top.bottom = offset.top + element.outerHeight(true);
             top.top = offset.top - $content.outerHeight(true);
 
             return top[truePosition];
@@ -84,12 +82,16 @@ angular.module('nag.tooltip')
           getLeft = function($content) {
             var truePosition = (position === 'left' || position === 'right') ? position: horizontalPosition;
             var left, offset;
-            offset = $handle.position();
+            offset = element.position();
             left = {};
 
-            left.middle = offset.left + Math.floor(($handle.outerWidth(true) / 2) - $content.outerWidth(true) / 2);
+            console.log(offset);
+
+            left.middle = offset.left + Math.floor((element.outerWidth(true) / 2) - $content.outerWidth(true) / 2);
             left.left = offset.left - $content.outerWidth(true);
-            left.right = offset.left + $handle.outerWidth(true);
+            left.right = offset.left + element.outerWidth(true);
+
+            console.log(left);
 
             return left[truePosition];
           };
