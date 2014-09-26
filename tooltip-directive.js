@@ -34,22 +34,42 @@ angular.module('nag.tooltip')
 .directive('nagTooltip', [
   '$compile',
   function($compile){
+    //we need to be able to track at a global level if a sticky is active to prevent any other tooltip from displaying
+    var globalStickyActive = false;
+
     return {
       restrict: 'A',
       scope: true,
-      compile: function(element, attributes) {
-        var setContentCss = function(cssObject) {
-          $('#' + attributes.contentId).css(cssObject);
+      controller: [
+        '$scope',
+        function($scope) {
+          this.hide = function() {
+            //only need to hide if it is the tooltip with the sticky active
+            if($scope.contentVisible === 'sticky') {
+              $scope.hideTooltip(true);
+            }
+          };
 
-          if(attributes.stickyContentId) {
-            $('#' + attributes.stickyContentId).css(cssObject);
+          this.show = function() {
+            $scope.showTooltip();
+          };
+        }
+      ],
+      compile: function(element, attributes) {
+        var stickyContent = element.find('.tooltip-sticky-content');
+        var regularContent = element.find('.tooltip-content');
+        var setContentCss = function(cssObject) {
+          regularContent.css(cssObject);
+
+          if(stickyContent) {
+            stickyContent.css(cssObject);
           }
         };
 
         element.find('.handle').attr('ng-mouseenter', 'showTooltip()');
         element.find('.handle').attr('ng-mouseleave', 'hideTooltip()');
 
-        if(attributes.stickyContentId) {
+        if(stickyContent) {
           element.find('.handle').attr('ng-click', 'toggleTooltip(true)');
         }
 
@@ -69,11 +89,11 @@ angular.module('nag.tooltip')
           getTop = function($content) {
             var truePosition = (position === 'top' || position === 'bottom') ? position: verticalPosition;
             var top, offset;
-            offset = element.position();
+            offset = element.find('.handle').position();
             top = {};
 
-            top.middle = offset.top + Math.floor((element.outerHeight(true) / 2) - ($content.outerHeight(true) / 2));
-            top.bottom = offset.top + element.outerHeight(true);
+            top.middle = offset.top + Math.floor((element.find('.handle').outerHeight(true) / 2) - ($content.outerHeight(true) / 2));
+            top.bottom = offset.top + element.find('.handle').outerHeight(true);
             top.top = offset.top - $content.outerHeight(true);
 
             return top[truePosition];
@@ -82,37 +102,45 @@ angular.module('nag.tooltip')
           getLeft = function($content) {
             var truePosition = (position === 'left' || position === 'right') ? position: horizontalPosition;
             var left, offset;
-            offset = element.position();
+            offset = element.find('.handle').position();
             left = {};
 
-            left.middle = offset.left + Math.floor((element.outerWidth(true) / 2) - $content.outerWidth(true) / 2);
+            left.middle = offset.left + Math.floor((element.find('.handle').outerWidth(true) / 2) - $content.outerWidth(true) / 2);
             left.left = offset.left - $content.outerWidth(true);
-            left.right = offset.left + element.outerWidth(true);
+            left.right = offset.left + element.find('.handle').outerWidth(true);
 
             return left[truePosition];
           };
 
           setTooltipPosition = function() {
-            $('#' + attributes.contentId).css({
-              top: getTop($('#' + attributes.contentId)),
-              left: getLeft($('#' + attributes.contentId))
+           regularContent.css({
+              top: getTop(regularContent),
+              left: getLeft(regularContent)
             });
 
-            if(attributes.stickyContentId) {
-              $('#' + attributes.stickyContentId).css({
-                top: getTop($('#' + attributes.stickyContentId)),
-                left: getLeft($('#' + attributes.stickyContentId))
+            if(stickyContent) {
+              stickyContent.css({
+                top: getTop(stickyContent),
+                left: getLeft(stickyContent)
               });
             }
           };
 
           /**
-           * Whether or no the content is visible
+           * What content to display
            *
            * @ngscope
-           * @property {boolean} contentVisible
+           * @property {boolean|string} contentVisible
            */
           scope.contentVisible = false;
+
+          /**
+           * Keeps track on whether the regular hover tooltip should be displayed.  It help with determining whether or not to show the regular hover tooltip when removing the sticky tooltip (clicking the handle should keep the regular tooltip display however click out of the tooltip, should make the when the sticky goes away, the regular tooltip does not show).
+           *
+           * @ngscope
+           * @property {boolean} regularContentVisible
+           */
+          scope.regularContentVisible = false;
 
           /**
            * Display the tooltip content
@@ -121,14 +149,20 @@ angular.module('nag.tooltip')
            * @method showTooltip
            */
           scope.showTooltip = function(sticky) {
-            //makes sure if the layout of the page has changes, the tooltip will still show up in the correct position
-            setTooltipPosition();
+            //should not be able to activate any tooltip when a sticky version is already being displayed
+            if(globalStickyActive === false) {
+              //makes sure if the layout of the page has changes, the tooltip will still show up in the correct position
+              setTooltipPosition();
 
-            if(sticky === true) {
-              scope.contentVisible = 'sticky';
-            } else if(scope.contentVisible !== 'sticky') { //make sure not to remove sticky content if it is visible and attempting to should hover tooltip
-              scope.contentVisible = true;
+              if(sticky === true) {
+                globalStickyActive = true;
+                scope.contentVisible = 'sticky';
+              } else if(scope.contentVisible !== 'sticky') { //make sure not to remove sticky content if it is visible and attempting to should hover tooltip
+                scope.contentVisible = true;
+              }
             }
+
+            scope.regularContentVisible = true;
           };
 
           /**
@@ -139,9 +173,13 @@ angular.module('nag.tooltip')
            */
           scope.hideTooltip = function(sticky) {
             if(sticky === true) {
-              scope.contentVisible = true;
+              globalStickyActive = false;
+              scope.contentVisible = scope.regularContentVisible;
             } else if(scope.contentVisible !== 'sticky') { //make sure not to remove sticky content is it is visible and attempting to hide regular tooltip
+              scope.regularContentVisible = false;
               scope.contentVisible = false;
+            } else {
+              scope.regularContentVisible = false;
             }
           };
 
@@ -162,17 +200,23 @@ angular.module('nag.tooltip')
           };
 
           scope.$watch('contentVisible', function(newValue, oldValue) {
-            if(attributes.stickyContentId) {
-              $('#' + attributes.stickyContentId).removeClass('is-active');
+            if(stickyContent) {
+              stickyContent.removeClass('is-active');
             }
 
-            if(newValue === true) {
-              $('#' + attributes.contentId).addClass('is-active');
+            //don't display the regular tooltip if the mouse has moved off the handle (used for single panel functionality)
+            if(newValue === true && scope.regularContentVisible === false) {
+              newValue = false;
+            }
+
+            if(newValue === true && globalStickyActive === false) {
+             regularContent.addClass('is-active');
             } else if(newValue === 'sticky') {
-              $('#' + attributes.stickyContentId).addClass('is-active');
-              $('#' + attributes.contentId).removeClass('is-active');
-            } else {
-              $('#' + attributes.contentId).removeClass('is-active');
+              stickyContent.addClass('is-active');
+            }
+
+            if(newValue !== true || globalStickyActive !== false) {
+             regularContent.removeClass('is-active');
             }
           });
         };

@@ -20,7 +20,21 @@
       <div class="main-content" ui-view></div>
       <footer ui-view="footer"></footer>
     </div>
-    
+
+    <script type="text/javascript">
+    window.onerror = function (errorMsg, url, lineNumber, columnNumber, errorObject) {
+  var errMsg;
+
+  //check the errorObject as IE and FF don't pass it through (yet)
+  if (errorObject && errorObject !== undefined) {
+    errMsg = errorObject.message;
+  } else {
+    errMsg = errorMsg;
+  }
+
+  console.log('Error: ' + errMsg);
+};</script>
+
     <script type="text/javascript" src="components/lodash/dist/lodash.js"></script>
 
     <!-- START-JS-MIN:app/build/libraries.js -->
@@ -29,7 +43,14 @@
     <script type="text/javascript" src="components/jquery/dist/jquery.js"></script>
     <script type="text/javascript" src="components/angular/angular.js"></script>
     <script type="text/javascript" src="components/angular-ui-router/release/angular-ui-router.js"></script>
-    
+
+    <script type="text/javascript" src="components/nucleus-angular-core/module.js"></script>
+    <script type="text/javascript" src="components/nucleus-angular-core/defaults-factory.js"></script>
+    <script type="text/javascript" src="components/nucleus-angular-core/helper-factory.js"></script>
+    <script type="text/javascript" src="components/nucleus-angular-single-panel/module.js"></script>
+    <script type="text/javascript" src="components/nucleus-angular-single-panel/single-panel-manager-provider.js"></script>
+    <script type="text/javascript" src="components/nucleus-angular-single-panel/single-panel-controller.js"></script>
+    <script type="text/javascript" src="components/nucleus-angular-single-panel/single-panel-directive.js"></script>
     <script type="text/javascript" src="components/nucleus-angular-tooltip/module.js"></script>
     <script type="text/javascript" src="components/nucleus-angular-tooltip/tooltip-directive.js"></script>
     <!-- END-JS-MIN -->
@@ -42,7 +63,7 @@
     <script type="text/javascript" src="app/components/home/module.js"></script>
     <script type="text/javascript" src="app/components/home/home.js"></script>
     <!-- END-JS-MIN -->
-  
+
     <script type="text/javascript" src="app/components/core/constants.js"></script>
   </body>
 </html>

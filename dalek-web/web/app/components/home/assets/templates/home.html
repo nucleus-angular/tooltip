@@ -1,22 +1,27 @@
 <div class="home-page" style="position: relative;">
-  <p>
-    This paragraph content a number of tooltip element to show the functionality of this component.  The placement of the tooltip can be down easily with the <span nag-tooltip data-position="top" data-content-id="top-content"><span class="handle">top</span></span>, <span nag-tooltip data-position="right" data-content-id="right-content"><span class="handle">right</span></span>, <span nag-tooltip data-position="left" data-content-id="left-content"><span class="handle">left</span></span>, and <span nag-tooltip data-position="bottom" data-content-id="bottom-content"><span class="handle">bottom</span></span> classes.  You can also use the data-vertical and data-horizontal attribute to further define tooltip positon, such as <span nag-tooltip data-position="top" data-horizontal="left" data-content-id="top-left-content"><span class="handle">top left</span></span>, <span nag-tooltip data-position="top" data-horizontal="right" data-content-id="top-right-content"><span class="handle">top right</span></span>, <span nag-tooltip data-position="bottom" data-horizontal="left" data-content-id="bottom-left-content"><span class="handle">bottom left</span></span>, or <span nag-tooltip data-position="bottom" data-horizontal="right" data-content-id="bottom-right-content"><span class="handle">bottom right</span></span>.  Tooltip can not only have a regular hover tooltip buyer also a <span nag-tooltip data-position="bottom" data-content-id="regular-content" data-sticky-content-id="sticky-content"><span class="handle">sticky version</span></span>.
-  </p>
-  <div id="top-content" class="tooltip-content bottom-arrow">top tooltip content</div>
-  <div id="right-content" class="tooltip-content left-arrow">right tooltip content</div>
-  <div id="left-content" class="tooltip-content right-arrow">left tooltip content</div>
-  <div id="bottom-content" class="tooltip-content top-arrow">bottom tooltip content</div>
-  <div id="top-left-content" class="tooltip-content">top left tooltip content</div>
-  <div id="top-right-content" class="tooltip-content">top right tooltip content</div>
-  <div id="bottom-left-content" class="tooltip-content">bottom left tooltip content</div>
-  <div id="bottom-right-content" class="tooltip-content">bottom right tooltip content</div>
-
-  <div id="regular-content" class="tooltip-content top-arrow">Switch Applications</div>
-  <div id="sticky-content" class="tooltip-sticky-content top-arrow">
+  <div class="wrapper">
+    This paragraph content a number of tooltip element to show the functionality of this component.  The placement of the tooltip can be down easily with the <span nag-tooltip data-position="top"><span class="handle">top</span>
+  <div id="top-content" class="tooltip-content bottom-arrow">top tooltip content</div></span>, <span nag-tooltip data-position="right"><span class="handle">right</span>
+  <div id="right-content" class="tooltip-content left-arrow">right tooltip content</div></span>, <span nag-tooltip data-position="left"><span class="handle">left</span>
+  <div id="left-content" class="tooltip-content right-arrow">left tooltip content</div></span>, and <span nag-tooltip data-position="bottom"><span class="handle">bottom</span>
+  <div id="bottom-content" class="tooltip-content top-arrow">bottom tooltip content</div></span> classes.  You can also use the data-vertical and data-horizontal attribute to further define tooltip positon, such as <span nag-tooltip data-position="top" data-horizontal="left"><span class="handle">top left</span>
+  <div id="top-left-content" class="tooltip-content">top left tooltip content</div></span>, <span nag-tooltip data-position="top" data-horizontal="right"><span class="handle">top right</span>
+  <div id="top-right-content" class="tooltip-content">top right tooltip content</div></span>, <span nag-tooltip data-position="bottom" data-horizontal="left"><span class="handle">bottom left</span>
+  <div id="bottom-left-content" class="tooltip-content">bottom left tooltip content</div></span>, or <span nag-tooltip data-position="bottom" data-horizontal="right"><span class="handle">bottom right</span>
+  <div id="bottom-right-content" class="tooltip-content">bottom right tooltip content</div></span>.  Tooltip can not only have a regular hover tooltip buyer also a <span nag-tooltip nag-single-panel data-id="sticky-sticky-tooltip" data-position="bottom"><span class="handle">sticky</span><span id="regular-content" class="tooltip-content top-arrow">Switch Applications</span>
+  <span id="sticky-content" class="tooltip-sticky-content top-arrow">
     <ul>
       <li>Email</li>
       <li>Documents</li>
       <li>Spread Sheets</li>
     </ul>
+  </span></span> <span nag-tooltip nag-single-panel data-id="sticky2" data-position="bottom"><span class="handle">version</span><div id="regular-content2" class="tooltip-content top-arrow">Switch Applications2</div>
+  <div id="sticky-content2" class="tooltip-sticky-content top-arrow">
+    <ul>
+      <li>Email2</li>
+      <li>Documents2</li>
+      <li>Spread Sheets2</li>
+    </ul>
+  </div></span>.
   </div>
 </div>

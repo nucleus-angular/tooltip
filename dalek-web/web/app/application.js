@@ -1,7 +1,8 @@
 angular.module('app', [
   'app.core',
   'app.home',
-  'nag.tooltip'
+  'nag.tooltip',
+  'nag.singlePanel'
 ])
 .config([
   '$locationProvider',
