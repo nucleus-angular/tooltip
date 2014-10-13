@@ -57,10 +57,7 @@ angular.module('nag.tooltip')
       ],
       compile: function(element, attributes) {
         var stickyContent = element.find('.tooltip-sticky-content');
-        var regularContent = element.find('.tooltip-content');
         var setContentCss = function(cssObject) {
-          regularContent.css(cssObject);
-
           if(stickyContent) {
             stickyContent.css(cssObject);
           }
@@ -113,11 +110,6 @@ angular.module('nag.tooltip')
           };
 
           setTooltipPosition = function() {
-           regularContent.css({
-              top: getTop(regularContent),
-              left: getLeft(regularContent)
-            });
-
             if(stickyContent) {
               stickyContent.css({
                 top: getTop(stickyContent),
@@ -133,14 +125,6 @@ angular.module('nag.tooltip')
            * @property {boolean|string} contentVisible
            */
           scope.contentVisible = false;
-
-          /**
-           * Keeps track on whether the regular hover tooltip should be displayed.  It help with determining whether or not to show the regular hover tooltip when removing the sticky tooltip (clicking the handle should keep the regular tooltip display however click out of the tooltip, should make the when the sticky goes away, the regular tooltip does not show).
-           *
-           * @ngscope
-           * @property {boolean} regularContentVisible
-           */
-          scope.regularContentVisible = false;
 
           /**
            * Display the tooltip content
@@ -161,8 +145,6 @@ angular.module('nag.tooltip')
                 scope.contentVisible = true;
               }
             }
-
-            scope.regularContentVisible = true;
           };
 
           /**
@@ -174,12 +156,7 @@ angular.module('nag.tooltip')
           scope.hideTooltip = function(sticky) {
             if(sticky === true) {
               globalStickyActive = false;
-              scope.contentVisible = scope.regularContentVisible;
-            } else if(scope.contentVisible !== 'sticky') { //make sure not to remove sticky content is it is visible and attempting to hide regular tooltip
-              scope.regularContentVisible = false;
               scope.contentVisible = false;
-            } else {
-              scope.regularContentVisible = false;
             }
           };
 
@@ -202,21 +179,12 @@ angular.module('nag.tooltip')
           scope.$watch('contentVisible', function(newValue, oldValue) {
             if(stickyContent) {
               stickyContent.removeClass('is-active');
+              element.removeClass('is-active');
             }
 
-            //don't display the regular tooltip if the mouse has moved off the handle (used for single panel functionality)
-            if(newValue === true && scope.regularContentVisible === false) {
-              newValue = false;
-            }
-
-            if(newValue === true && globalStickyActive === false) {
-             regularContent.addClass('is-active');
-            } else if(newValue === 'sticky') {
+            if(newValue === 'sticky') {
               stickyContent.addClass('is-active');
-            }
-
-            if(newValue !== true || globalStickyActive !== false) {
-             regularContent.removeClass('is-active');
+              element.addClass('is-active');
             }
           });
         };

@@ -1,27 +1,32 @@
 <div class="home-page" style="position: relative;">
   <div class="wrapper">
-    This paragraph content a number of tooltip element to show the functionality of this component.  The placement of the tooltip can be down easily with the <span nag-tooltip data-position="top"><span class="handle">top</span>
-  <div id="top-content" class="tooltip-content bottom-arrow">top tooltip content</div></span>, <span nag-tooltip data-position="right"><span class="handle">right</span>
-  <div id="right-content" class="tooltip-content left-arrow">right tooltip content</div></span>, <span nag-tooltip data-position="left"><span class="handle">left</span>
-  <div id="left-content" class="tooltip-content right-arrow">left tooltip content</div></span>, and <span nag-tooltip data-position="bottom"><span class="handle">bottom</span>
-  <div id="bottom-content" class="tooltip-content top-arrow">bottom tooltip content</div></span> classes.  You can also use the data-vertical and data-horizontal attribute to further define tooltip positon, such as <span nag-tooltip data-position="top" data-horizontal="left"><span class="handle">top left</span>
-  <div id="top-left-content" class="tooltip-content">top left tooltip content</div></span>, <span nag-tooltip data-position="top" data-horizontal="right"><span class="handle">top right</span>
-  <div id="top-right-content" class="tooltip-content">top right tooltip content</div></span>, <span nag-tooltip data-position="bottom" data-horizontal="left"><span class="handle">bottom left</span>
-  <div id="bottom-left-content" class="tooltip-content">bottom left tooltip content</div></span>, or <span nag-tooltip data-position="bottom" data-horizontal="right"><span class="handle">bottom right</span>
-  <div id="bottom-right-content" class="tooltip-content">bottom right tooltip content</div></span>.  Tooltip can not only have a regular hover tooltip buyer also a <span nag-tooltip nag-single-panel data-id="sticky-sticky-tooltip" data-position="bottom"><span class="handle">sticky</span><span id="regular-content" class="tooltip-content top-arrow">Switch Applications</span>
-  <span id="sticky-content" class="tooltip-sticky-content top-arrow">
-    <ul>
-      <li>Email</li>
-      <li>Documents</li>
-      <li>Spread Sheets</li>
-    </ul>
-  </span></span> <span nag-tooltip nag-single-panel data-id="sticky2" data-position="bottom"><span class="handle">version</span><div id="regular-content2" class="tooltip-content top-arrow">Switch Applications2</div>
-  <div id="sticky-content2" class="tooltip-sticky-content top-arrow">
-    <ul>
-      <li>Email2</li>
-      <li>Documents2</li>
-      <li>Spread Sheets2</li>
-    </ul>
-  </div></span>.
+    The Nucleus Angular SASS framework include the source code from the <a href="https://github.com/chinchang/hint.css">hint.css</a> library which provides tooltip functionality through pure CSS.  This tooltip directive provides functionality to have a sticky tooltip and should only be used if you need that functionality (otherwise, the pure CSS tooltip should suffice).  The position of the sticky tooltip is controlled through the data-vertical and data-horizontal attributes so you can have sticky tooltips such as <span nag-tooltip nag-single-panel data-id="sticky1" data-vertical="top" data-horizontal="left">
+      <span class="handle hint left" data-hint="hint.css content">top left</span>
+      <span class="tooltip-sticky-content">
+        <ul>
+          <li>Email</li>
+          <li>Documents</li>
+          <li>Spread Sheets</li>
+        </ul>
+      </span>
+    </span>, <span nag-tooltip nag-single-panel data-id="sticky2" data-vertical="bottom" data-horizontal="right">
+      <span class="handle hint right" data-hint="hint.css content">bottom right</span>
+      <div class="tooltip-sticky-content">
+        <ul>
+          <li>Email2</li>
+          <li>Documents2</li>
+          <li>Spread Sheets2</li>
+        </ul>
+      </div>
+    </span>, or <span nag-tooltip nag-single-panel data-id="sticky3" data-vertical="middle" data-horizontal="left">
+      <span class="handle hint bottom" data-hint="hint.css content">left middle</span>
+      <div class="tooltip-sticky-content">
+        <ul>
+          <li>Email2</li>
+          <li>Documents2</li>
+          <li>Spread Sheets2</li>
+        </ul>
+      </div>
+    </span>.
   </div>
 </div>

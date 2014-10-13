@@ -2,6 +2,7 @@
 
 ## master
 
+- simple tooltips are now provided by the inclusion of hint.css in the sass framework
 - added support for single panel and sticky tooltip functionality
 - displaying a sticky tooltip now disables all other tooltips until the sticky tooltip is closed
 - removed auto positioning (did not like implementation and not really sure if it is needed)
