@@ -1,7 +1,7 @@
 /**
  * # Tooltip
  *
- * This directive allow you to create a tooltip when you hover of interact with the element.
+ * Since a regular hover tooltip can be provide by the hint.css library that is included without javascript, this directive is only need in the use cases where you need a sticky tooltip ()
  *
  * EXAMPLE TODO
  *
@@ -34,9 +34,6 @@ angular.module('nag.tooltip')
 .directive('nagTooltip', [
   '$compile',
   function($compile){
-    //we need to be able to track at a global level if a sticky is active to prevent any other tooltip from displaying
-    var globalStickyActive = false;
-
     return {
       restrict: 'A',
       scope: true,
@@ -44,9 +41,8 @@ angular.module('nag.tooltip')
         '$scope',
         function($scope) {
           this.hide = function() {
-            //only need to hide if it is the tooltip with the sticky active
-            if($scope.contentVisible === 'sticky') {
-              $scope.hideTooltip(true);
+            if($scope.contentVisible === true) {
+              $scope.hideTooltip();
             }
           };
 
@@ -57,20 +53,9 @@ angular.module('nag.tooltip')
       ],
       compile: function(element, attributes) {
         var stickyContent = element.find('.tooltip-sticky-content');
-        var setContentCss = function(cssObject) {
-          if(stickyContent) {
-            stickyContent.css(cssObject);
-          }
-        };
+        element.find('.handle').attr('ng-click', 'toggleTooltip()');
 
-        element.find('.handle').attr('ng-mouseenter', 'showTooltip()');
-        element.find('.handle').attr('ng-mouseleave', 'hideTooltip()');
-
-        if(stickyContent) {
-          element.find('.handle').attr('ng-click', 'toggleTooltip(true)');
-        }
-
-        setContentCss({
+        stickyContent.css({
           position: 'absolute',
           top: '0px',
           left: '0px'
@@ -110,12 +95,10 @@ angular.module('nag.tooltip')
           };
 
           setTooltipPosition = function() {
-            if(stickyContent) {
-              stickyContent.css({
-                top: getTop(stickyContent),
-                left: getLeft(stickyContent)
-              });
-            }
+            stickyContent.css({
+              top: getTop(stickyContent),
+              left: getLeft(stickyContent)
+            });
           };
 
           /**
@@ -132,18 +115,12 @@ angular.module('nag.tooltip')
            * @ngscope
            * @method showTooltip
            */
-          scope.showTooltip = function(sticky) {
-            //should not be able to activate any tooltip when a sticky version is already being displayed
-            if(globalStickyActive === false) {
+          scope.showTooltip = function() {
+            if(scope.contentVisible !== true) {
               //makes sure if the layout of the page has changes, the tooltip will still show up in the correct position
               setTooltipPosition();
 
-              if(sticky === true) {
-                globalStickyActive = true;
-                scope.contentVisible = 'sticky';
-              } else if(scope.contentVisible !== 'sticky') { //make sure not to remove sticky content if it is visible and attempting to should hover tooltip
-                scope.contentVisible = true;
-              }
+              scope.contentVisible = true;
             }
           };
 
@@ -153,11 +130,8 @@ angular.module('nag.tooltip')
            * @ngscope
            * @method hideTooltip
            */
-          scope.hideTooltip = function(sticky) {
-            if(sticky === true) {
-              globalStickyActive = false;
-              scope.contentVisible = false;
-            }
+          scope.hideTooltip = function() {
+            scope.contentVisible = false;
           };
 
           /**
@@ -166,25 +140,21 @@ angular.module('nag.tooltip')
            * @ngscope
            * @method toggleTooltip
            */
-          scope.toggleTooltip = function(sticky) {
-            if(
-              (sticky === true && scope.contentVisible === 'sticky')
-              || (sticky !== true && scope.contentVisible === true)) {
-              scope.hideTooltip(sticky);
+          scope.toggleTooltip = function() {
+            if(scope.contentVisible === true) {
+              scope.hideTooltip();
             } else {
-              scope.showTooltip(sticky);
+              scope.showTooltip();
             }
           };
 
           scope.$watch('contentVisible', function(newValue, oldValue) {
-            if(stickyContent) {
-              stickyContent.removeClass('is-active');
-              element.removeClass('is-active');
-            }
-
-            if(newValue === 'sticky') {
+            if(newValue === true) {
               stickyContent.addClass('is-active');
               element.addClass('is-active');
+            } else {
+              stickyContent.removeClass('is-active');
+              element.removeClass('is-active');
             }
           });
         };
